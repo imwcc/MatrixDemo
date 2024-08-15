@@ -12,6 +12,7 @@ import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -46,7 +47,7 @@ public class SurfaceView1 extends SurfaceView implements SurfaceHolder.Callback 
         pointPaint=new Paint();
         pointPaint.setColor(Color.RED);
         pointPaint.setStrokeWidth(3);
-        sourceBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bkpic);
+        sourceBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pi_ka_qiu);
         Logger.e("------图片的大小："+sourceBitmap.getWidth()+";"+sourceBitmap.getHeight());
 
     }
@@ -143,19 +144,47 @@ public class SurfaceView1 extends SurfaceView implements SurfaceHolder.Callback 
      * 绘制图片
      * @param canvas
      */
-    private void drawMap(Canvas canvas){
+    private void drawMap(Canvas canvas) {
+        pointPaint.setColor(Color.BLUE);
         pointPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         canvas.drawPaint(pointPaint);
         pointPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
-        canvas.drawColor(Color.parseColor("#101112"));
-        if (touchEvenHandler.currentStatus==touchEvenHandler.DEFAULT_BITMAP){
-            canvas.drawBitmap(sourceBitmap,touchEvenHandler.getMatrix(),pointPaint);
-        }else{
-            canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG| Paint.FILTER_BITMAP_FLAG));
-            canvas.drawBitmap(sourceBitmap, touchEvenHandler.getMatrix(), pointPaint);
-            PointF point=touchEvenHandler.coordinatesToCanvas(100,200);
-            canvas.drawCircle((float) point.x,(float) point.y,5,pointPaint);
+        canvas.drawColor(Color.RED);
+
+        Matrix matrix = new Matrix();
+
+//        float[] values = {0.5f,0f, 0.0f,
+//                0f, 0.5f, 0.0f,
+//                0.0f, 0.0f, 1.0f };
+
+        float[] values = {0f,-1f, 0,
+                          1f, 0f, 0.0f,
+                          0.0f, 0.0f, 1.0f };
+        matrix.setValues(values);
+
+        Matrix matrix2 = new Matrix();
+
+        float[] values2 = {1f,0f, sourceBitmap.getHeight(),
+                          0f, 1f, 0.0f,
+                0.0f, 0.0f, 1.0f };
+        matrix2.setValues(values2);
+
+        matrix.set(matrix2);
+//        matrix.setRotate(90, 0, 0);  // 旋转 30 度，中心点为 (100, 100)
+//        matrix.postTranslate(sourceBitmap.getHeight(), 0);    // 平移 100 像素到右边
+
+        if (touchEvenHandler.currentStatus == touchEvenHandler.DEFAULT_BITMAP) {
+            canvas.drawBitmap(sourceBitmap, matrix, pointPaint);
+        } else {
+            canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));
+            canvas.drawBitmap(sourceBitmap, matrix, pointPaint);
+            PointF point = touchEvenHandler.coordinatesToCanvas(100, 200);
+            canvas.drawCircle((float) point.x, (float) point.y, 100, pointPaint);
         }
+//    }
+
+        Log.d("arvin", "matrix " + matrix.toString());
+        Log.d("arvin", "touch——matrix " + touchEvenHandler.getMatrix().toString());
     }
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {

@@ -10,13 +10,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        surface.startThread();
     }
-    fun onClickView(view :View){
-        when(view.id){
-            R.id.btMark->{
-                surface.startThread()
-            }
-        }
-    }
+//    fun onClickView(view :View){
+//        when(view.id){
+//            R.id.btMark->{
+//                surface.startThread()
+//            }
+//        }
+//    }
 }
